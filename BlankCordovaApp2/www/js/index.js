@@ -10,8 +10,13 @@
  
     document.addEventListener('deviceready', onDeviceReady.bind(this), false);
     $("#PendingPage").on("pagebeforeshow", LoadJobsList);
-   $("#CompletedPage").on("pagebeforeshow", LoadCompletedList);
+    $("#CompletedPage").on("pagebeforeshow", LoadCompletedList);
     document.querySelector("#btn_Add").addEventListener("click", AddEntry, false);
+    // document.querySelector("#CameraBtn").addEventListener("click", capturePhoto, false);
+    pictureSource = navigator.camera.PictureSourceType;
+    destinationType = navigator.camera.DestinationType;
+    $("#CameraBtn").on("click", capturePhoto);
+  
    document.querySelector("#btnEmail").addEventListener("click", doEmail, false);
    document.querySelector("#btnSortUp").addEventListener("click", sortListUp, false);
    document.querySelector("#btnSortDown").addEventListener("click",sortListDown, false);
@@ -27,8 +32,7 @@
         var receivedElement = parentElement.querySelector('.received');
            listeningElement.setAttribute('style', 'display:none;');
            receivedElement.setAttribute('style', 'display:block;');
-        pictureSource = navigator.camera.PictureSourceType;
-        destinationType = navigator.camera.DestinationType;
+       
       // check email plugin
         var isAvailable = false;
         if (window.plugin) {
@@ -48,11 +52,13 @@
         if (existingEntries == null) existingEntries = [];
         var entryTitle = document.getElementById('JobTitle').value;
         var entryText = document.getElementById('Description').value;
+        var entryimg = document.getElementById('smallImage').src;
         var entry =
             {
                 "title": entryTitle,
                 "text": entryText,
                 "date": Date.now(),
+                "Jobimage":entryimg,
                 //"jobimage":
             };
 
@@ -114,8 +120,8 @@ function onFail(message) {
 }
 
 function LoadJobsList(array)
-{ 
-    $("#UiPendingList").html("");
+{
+        $("#UiPendingList").html("");
     if (!array.length)
     {
         array = JSON.parse(localStorage.getItem("PendingList"));
@@ -123,26 +129,31 @@ function LoadJobsList(array)
    
         if (array !== null) {
             for (var i = 0 ; i < array.length; i++) {
-                $("#UiPendingList").append("<li><div data-role=" + "collapsible" + ">" + "<h2>" + array[i].title + "</h2> <br/>" +
-                 AddDivJobText(i, array[i].text) +
-                "<br/>" +
 
-                AddCompleteButton(i) +
-                AddSaveChangesButton(i) +
-                AddDeleteJobButton(i) + "</div> </li>");
+                AddDivJobTitle(i, array[i].title);
+                AddDivJobText(i, array[i].text);
+                AddImage(i, array[i].Jobimage);
+                AddSaveChangesButton(i);
+                AddCompleteButton(i);
+                AddDeleteJobButton(i);
+
 
             };
-
+            $("#PendingJobListCollasp").collapsibleset("refresh");
         };
     
-    $("#PendingJobList").collapsibleset().collapsibleset("refresh");
+        $("#UiPendingList").collapsibleset().collapsibleset("refresh");
     // 
 }
 
-  //      " <button id="+"btnDone"+"'"+i+"'"+ " value=" + i + " data-icon=" + "check" + "> </button>" +
-                           //     " <button id="+"btnDelete"+i + " value=" + i + " data-icon=" + "delete"  + "> </button>" +
-   
-
+    
+function AddDivJobTitle(id, text) {
+    var element = document.createElement("h3");
+    element.innerHTML = text;
+    var DivParent = document.getElementById("UiPendingList");
+    //Append the element in page (in span).  
+    DivParent.appendChild(element);
+}
    
 function AddDivJobText(id,text)
 {
@@ -155,41 +166,25 @@ function AddDivJobText(id,text)
      DivParent.appendChild(element);
 }
 
-function sortListUp(array)
-{
-    var array = JSON.parse(localStorage.getItem("PendingList"));
-    array.sort(date_sort_asc);
-    LoadJobsList(array);
+function AddImage(id, imgdata) {
+    var element = document.createElement("img");
+    element.id = "img" + id;
+    element.src = imgdata;
+    element.style.display = 'block';
+    var DivParent = document.getElementById("UiPendingList");
+    //Append the element in page (in span).  
+    DivParent.appendChild(element);
 }
-function sortListDown(array) {
-    var array = JSON.parse(localStorage.getItem("PendingList"));
-    array.sort(date_sort_desc);
-    LoadJobsList(array);
-}
-var date_sort_asc = function (date1, date2) { 
-       // This is a comparison function that will result in dates being sorted in 
-       // ASCENDING order. As you can see, JavaScript's native comparison operators 
-       // can be used to compare dates. This was news to me. 
-       if (date1.date > date2.date) return 1; 
-       if (date1.date < date2.date) return -1; 
-       return 0; 
-     }; 
- 
- var date_sort_desc = function (date1, date2) { 
-       // This is a comparison function that will result in dates being sorted in 
-       // DESCENDING order. 
-       if (date1.date > date2.date) return -1; 
-       if (date1.date < date2.date) return 1; 
-       return 0; 
-     }; 
-
-
 function AddCompleteButton(id)
 {
     var element = document.createElement("input");
     //Assign different attributes to the element. 
     element.type = "button";
-    element.value = "Done";
+    element.id = "Add" + id;
+    var att="data-icon="+"check";
+   element.attributes=att;
+      element.value = "Done";
+
     element.class = "ui-btn ui-icon-check";
     element.addEventListener("click",function AddComplete() {
        
@@ -211,13 +206,12 @@ function AddCompleteButton(id)
        LoadJobsList(PendingList);
 
     }, false);
-   
+    var divid = "job" + id;
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
     DivParent.appendChild(element);
  };
-
-    
+  
 function AddSaveChangesButton(id) {
     var element = document.createElement("input");
     //Assign different attributes to the element. 
@@ -236,8 +230,9 @@ function AddSaveChangesButton(id) {
         LoadJobsList(PendingList);
 
     }, false);
-
+    
     //   document.querySelector(element.value).addEventListener("click", AddComplete, false);
+    var divid = "job" + id;
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
     DivParent.appendChild(element);
@@ -259,7 +254,8 @@ function AddDeleteJobButton(id)
 
     }, false);
 
-    //   document.querySelector(element.value).addEventListener("click", AddComplete, false);
+    
+    var divid = "job" + id;
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
     DivParent.appendChild(element);
@@ -267,7 +263,7 @@ function AddDeleteJobButton(id)
 
 
 function LoadCompletedList(array) {
-   // localStorage.clear();
+   
     $("#CompletedJobList").html("");
    
         array= JSON.parse(localStorage.getItem("CompletedList"));
@@ -276,29 +272,94 @@ function LoadCompletedList(array) {
             var obj = array[i];
             for (var l in obj) {
                 $("#CompletedJobList").append(
-               "<div data-role=" + "collapsible" + " data-collapsed=" + "false" + ">" + "<h2>" + obj[l].title + "</h2>" +
-                   "<p>" + obj[l].text + "</p>"+
-                              " <a data-role="+"button"+"  id=" + "btnDel" + " value=" + i + " data-icon=" + "delete"  + "> Delete </a> " +
-                  "</div>");
-          
+               "<div data-role=" + "collapsible" + " data-collapsed=" + "false" + ">" + "<h3>" + obj[l].title + "</h3>" +
+                   "<p>" + obj[l].text + "</p> <br/>"+  "</div>");
+                     //         " <a data-role="+'button'+"  id=" + "btnDel" + " value=" + i + " data-icon=" + 'delete'  + "> Delete </a> " +
+                AddDeleteCompletedJobButton(l);
             }
+            
         }
         $("#ComletedJobList").collapsibleset().collapsibleset("refresh");
       
      
     }
 }
-    function DeleteCompleted() {
-        id = document.getElementById("btnDelete").value;
+function AddDeleteCompletedJobButton(id)
+{
+    var element = document.createElement("input");
+    element.type = "button";
+    element.id = "DeleteCompleted" + id;
+    var btnid = element.id;
+    element.value = "Delete Job";
+    element.class = "ui-btn ui-icon-delete";
+    element.addEventListener("click", function DeleteJob() {
+
+        id = document.getElementById(btnid).value;
         var currentlist = localStorage.getItem("CompletedList");
         if (currentlist) { CompletedList = JSON.parse(currentlist); }
         CompletedList.splice(id, 1);
         localStorage.setItem("CompletedList", JSON.stringify(CompletedList));
         LoadCompletedList();
+
+    }, false);
+    var DivParent = document.getElementById("CompletedJobList");
+    //Append the element in page (in span).  
+    DivParent.appendChild(element);
+}
+
+
+
+    function sortListUp(array) {
+        var array = JSON.parse(localStorage.getItem("PendingList"));
+        array.sort(date_sort_asc);
+        LoadJobsList(array);
+    }
+    function sortListDown(array) {
+        var array = JSON.parse(localStorage.getItem("PendingList"));
+        array.sort(date_sort_desc);
+        LoadJobsList(array);
+    }
+    var date_sort_asc = function (date1, date2) {
+        // This is a comparison function that will result in dates being sorted in 
+        // ASCENDING order. As you can see, JavaScript's native comparison operators 
+        // can be used to compare dates. This was news to me. 
+        if (date1.date > date2.date) return 1;
+        if (date1.date < date2.date) return -1;
+        return 0;
+    };
+
+    var date_sort_desc = function (date1, date2) {
+        // This is a comparison function that will result in dates being sorted in 
+        // DESCENDING order. 
+        if (date1.date > date2.date) return -1;
+        if (date1.date < date2.date) return 1;
+        return 0;
+    };
+
+    function capturePhoto() {
+        // Take picture using device camera and retrieve image as base64-encoded string
+        navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+            {
+                quality: 50,
+                destinationType: destinationType.DATA_URL, saveToPhotoAlbum: true
+            });
+        nav
+    }
+    function getPhoto(source) {
+        // Retrieve image file location from specified source
+       
+        navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+            quality: 50,
+            destinationType: destinationType.FILE_URI,
+            sourceType: source
+        });
     }
 
-
-
+    // Called if something bad happens.
+    //
+    function onFail(message) {
+        alert('Failed because: ' + message);
+    }
     function doEmail() {
 
       var subject = "Pending Jobs";
