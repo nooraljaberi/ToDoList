@@ -12,14 +12,17 @@
     $("#PendingPage").on("pagebeforeshow", LoadJobsList);
     $("#CompletedPage").on("pagebeforeshow", LoadCompletedList);
     document.querySelector("#btn_Add").addEventListener("click", AddEntry, false);
-    // document.querySelector("#CameraBtn").addEventListener("click", capturePhoto, false);
     pictureSource = navigator.camera.PictureSourceType;
     destinationType = navigator.camera.DestinationType;
     $("#CameraBtn").on("click", capturePhoto);
-  
-   document.querySelector("#btnEmail").addEventListener("click", doEmail, false);
+
+   emailmessage = cordova.plugins.email; 
+    document.querySelector("#btnEmail").addEventListener("click", doEmail, false);
    document.querySelector("#btnSortUp").addEventListener("click", sortListUp, false);
-   document.querySelector("#btnSortDown").addEventListener("click",sortListDown, false);
+   document.querySelector("#btnSortDown").addEventListener("click", sortListDown, false);
+
+    // check email plugin
+  
   function onDeviceReady() {
         // Handle the Cordova pause and resume events
         document.addEventListener( 'pause', onPause.bind( this ), false );
@@ -33,15 +36,14 @@
            listeningElement.setAttribute('style', 'display:none;');
            receivedElement.setAttribute('style', 'display:block;');
        
-      // check email plugin
-        var isAvailable = false;
-        if (window.plugin) {
-            window.plugin.email.isServiceAvailable(
-                function (emailInstalled) {
-                    isAvailable = emailInstalled;
-                }
-            );
-        }
+           
+           if (cordova.plugins) {
+               cordova.plugins.email.isServiceAvailable(
+                   function (emailInstalled) {
+                       isAvailable = emailInstalled;
+                   }
+               );
+           }
 
 
     };
@@ -83,6 +85,8 @@
  
   
 })  ();
+var emailmessage;
+var isAvailable = false;
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value
 var CompletedList = [];
@@ -308,7 +312,6 @@ function AddDeleteCompletedJobButton(id)
 }
 
 
-
     function sortListUp(array) {
         var array = JSON.parse(localStorage.getItem("PendingList"));
         array.sort(date_sort_asc);
@@ -360,22 +363,23 @@ function AddDeleteCompletedJobButton(id)
     function onFail(message) {
         alert('Failed because: ' + message);
     }
-    function doEmail() {
+    function doEmail()
+    {
 
       var subject = "Pending Jobs";
 
         var array = [];
         array = JSON.parse(localStorage.getItem("PendingList"));
-        var messagebody;
+        var messagebody="this email";
         for (var i = 0 ; i < array.length; i++) {
-            messagebody.append(
+            messagebody = +
             " <div>" +
             "<h2>" + array[i].title + "</h2>" +
                 "<p> " + array[i].text + "</br>" +
-                            "</div> <br/>");
+                            "</div> <br/>"
         }
 
-        if (!window.plugin) {
+     if (!window.plugin) {
             //non-mobile - plugins are not present.
             alert("Email plugin is not available");
             
@@ -386,10 +390,10 @@ function AddDeleteCompletedJobButton(id)
             alert("Email is not available")
             return;
         }
-        window.plugin.email.open({
+        cordova.plugins.email.open({
             to: [], cc: [], bcc: [], attachments: [],
             subject: subject,
-            body: message,
+            body: messagebody,
             isHtml: true
         });
       

@@ -12,6 +12,9 @@
         },
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "io.cordova.myapp1b3bc0"
+        },
+        "cordova-plugin-email-composer": {
+            "PACKAGE_NAME": "io.cordova.myapp1b3bc0"
         }
     },
     "dependent_plugins": {

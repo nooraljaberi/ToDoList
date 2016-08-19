@@ -107,4 +107,6 @@
     <splash src="res/screens/wp8/SplashScreenImage.png" width="768" height="1280" />
   </platform>
   <plugin name="cordova-plugin-camera" version="2.2.0" />
+  <plugin name="cordova-plugin-compat" version="1.0.0" />
+  <plugin name="cordova-plugin-email-composer" version="0.8.3" src="https://github.com/katzer/cordova-plugin-email-composer.git" />
 </widget>
