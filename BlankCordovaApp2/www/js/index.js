@@ -48,12 +48,7 @@ var PendingList = [];
         if (existingEntries == null) existingEntries = [];
         var entryTitle = document.getElementById('JobTitle').value;
         var entryText = document.getElementById('Description').value;
-      //  var entryimg;
-        //if (document.getElementById('smallImage').src!="")
-
-        //{  entryimg = document.getElementById('smallImage').src; };
-            
-        var entry =
+             var entry =
             {
                 "title": entryTitle,
                 "text": entryText,
@@ -131,27 +126,27 @@ function LoadJobsList(array)
    
         if (array !== null) {
             for (var i = 0 ; i < array.length; i++) {
-                
-                AddDivJobTitle(i, array[i].title, array[i].date);
-                AddDivJobText(i, array[i].text);
-                AddImage(i, array[i].Jobimage);
-                AddSaveChangesButton(i);
-                AddCompleteButton(i);
+               
+                var link =document.createElement("li");
+                link.innerHTML =
+                AddDivJobTitle(i, array[i].title, array[i].date),
+                AddDivJobText(i, array[i].text),
+                AddImage(i, array[i].Jobimage),
+                AddSaveChangesButton(i),
+                AddCompleteButton(i),
                 AddDeleteJobButton(i);
 
             };
-            $("#PendingJobListCollasp").collapsibleset("refresh");
+            $(".UiPendingList").listview("refresh");
         };
     
-        $("#UiPendingList").collapsibleset().collapsibleset("refresh");
-    // 
 }
 
     
 function AddDivJobTitle(id, text,date) {
     var element = document.createElement("h4");
     var d = new Date(date);
-    element.innerHTML = text + " <br/> <h5> Added on:"+ d.toLocaleDateString() +"<h5/>";
+    element.innerHTML = text + " <P> Added on:" + d.toLocaleDateString() + "</p>";
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
     DivParent.appendChild(element);
@@ -203,12 +198,13 @@ function AddCompleteButton(id)
    
         localStorage.setItem("PendingList", JSON.stringify(JobList));
 
-        var ExsistingCompleted = JSON.parse(localStorage.getItem("CompletedList"));
+        LoadJobsList(PendingList);
 
-        if (ExsistingCompleted == null) ExsistingCompleted = [];
+        var ExsistingCompleted = JSON.parse(localStorage.getItem("CompletedList"));
+         if (ExsistingCompleted == null) ExsistingCompleted = [];
         ExsistingCompleted.push(DeletedJob);
         localStorage.setItem("CompletedList", JSON.stringify(ExsistingCompleted));
-       LoadJobsList(PendingList);
+     
 
     }, false);
     var divid = "job" + id;
