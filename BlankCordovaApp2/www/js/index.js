@@ -73,7 +73,7 @@ var PendingList = [];
         }
         document.getElementById('JobTitle').value="";
        document.getElementById('Description').value="";
-        document.getElementById('smallImage').src="";
+     
     }
 
 
@@ -171,8 +171,8 @@ function AddImage(id, imgdata) {
     var element = document.createElement("img");
     element.id = "img" + id;
     element.src = imgdata;
-    element.width = "80px";
-    element.height = "80px ";
+    element.width= "80";
+    element.height ="80";
     element.style.display = 'block';
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
