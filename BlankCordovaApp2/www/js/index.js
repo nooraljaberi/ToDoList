@@ -54,8 +54,10 @@ var PendingList = [];
         if (existingEntries == null) existingEntries = [];
         var entryTitle = document.getElementById('JobTitle').value;
         var entryText = document.getElementById('Description').value;
-        if (document.getElementById('smallImage').src.length != 0)
-        { var entryimg = document.getElementById('smallImage').src; };
+        var entryimg;
+        if (document.getElementById('smallImage').src=="")
+
+        {  entryimg = document.getElementById('smallImage').src; };
             
         var entry =
             {
