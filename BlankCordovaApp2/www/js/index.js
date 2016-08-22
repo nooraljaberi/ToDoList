@@ -4,6 +4,10 @@
 // and then run "window.location.reload()" in the JavaScript Console.
 
 
+var pictureSource;   // picture source
+var destinationType; // sets the format of returned value
+var CompletedList = [];
+var PendingList = [];
 (function () {
     "use strict";
 
@@ -16,37 +20,33 @@
     destinationType = navigator.camera.DestinationType;
     $("#CameraBtn").on("click", capturePhoto);
 
-   emailmessage = cordova.plugins.email; 
     document.querySelector("#btnEmail").addEventListener("click", doEmail, false);
    document.querySelector("#btnSortUp").addEventListener("click", sortListUp, false);
    document.querySelector("#btnSortDown").addEventListener("click", sortListDown, false);
 
-    // check email plugin
   
+      
   function onDeviceReady() {
         // Handle the Cordova pause and resume events
         document.addEventListener( 'pause', onPause.bind( this ), false );
         document.addEventListener('resume', onResume.bind(this), false);
-        
      
-        // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
-        var parentElement = document.getElementById('deviceready');
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+       // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
+       var parentElement = document.getElementById("deviceready");
+        var listeningElement = parentElement.querySelector(".listening");
+        var receivedElement = parentElement.querySelector(".received");
            listeningElement.setAttribute('style', 'display:none;');
            receivedElement.setAttribute('style', 'display:block;');
-       
-           
-           if (cordova.plugins) {
-               cordova.plugins.email.isServiceAvailable(
-                   function (emailInstalled) {
-                       isAvailable = emailInstalled;
+      //
+           if (window.plugin) {
+               window.plugin.email.isAvailable(
+                   function (isAvailable) {
+                       
                    }
                );
            }
-
-
-    };
+        
+        };
     
     function AddEntry(e) {
 
@@ -61,7 +61,7 @@
                 "text": entryText,
                 "date": Date.now(),
                 "Jobimage":entryimg,
-                //"jobimage":
+                
             };
 
 
@@ -71,7 +71,9 @@
         if (typeof (Storage) !== "undefined") {
             localStorage.setItem("PendingList", JSON.stringify(existingEntries));
         }
-    
+        document.getElementById('JobTitle').value="";
+       document.getElementById('Description').value="";
+        document.getElementById('smallImage').src="";
     }
 
 
@@ -85,12 +87,7 @@
  
   
 })  ();
-var emailmessage;
-var isAvailable = false;
-var pictureSource;   // picture source
-var destinationType; // sets the format of returned value
-var CompletedList = [];
-var PendingList = [];
+
 
 function onPhotoDataSuccess(imageData) {
 
@@ -133,14 +130,13 @@ function LoadJobsList(array)
    
         if (array !== null) {
             for (var i = 0 ; i < array.length; i++) {
-
-                AddDivJobTitle(i, array[i].title);
+                
+                AddDivJobTitle(i, array[i].title, array[i].date);
                 AddDivJobText(i, array[i].text);
                 AddImage(i, array[i].Jobimage);
                 AddSaveChangesButton(i);
                 AddCompleteButton(i);
                 AddDeleteJobButton(i);
-
 
             };
             $("#PendingJobListCollasp").collapsibleset("refresh");
@@ -151,9 +147,10 @@ function LoadJobsList(array)
 }
 
     
-function AddDivJobTitle(id, text) {
-    var element = document.createElement("h3");
-    element.innerHTML = text;
+function AddDivJobTitle(id, text,date) {
+    var element = document.createElement("h4");
+    var d = new Date(date);
+    element.innerHTML = text + " <br/> <h5> Added on:"+ d.toLocaleDateString() +"<h5/>";
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
     DivParent.appendChild(element);
@@ -164,7 +161,7 @@ function AddDivJobText(id,text)
     var  element=document.createElement("div");
     element.contentEditable=true;
     element.id = "Div" + id;
-    element.innerHTML = text;
+    element.innerHTML = text + "<br/>";
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
      DivParent.appendChild(element);
@@ -174,6 +171,8 @@ function AddImage(id, imgdata) {
     var element = document.createElement("img");
     element.id = "img" + id;
     element.src = imgdata;
+    element.width = "80px";
+    element.height = "80px ";
     element.style.display = 'block';
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
@@ -221,7 +220,7 @@ function AddSaveChangesButton(id) {
     //Assign different attributes to the element. 
     element.type = "button";
     element.id = "Div" + id;
-    element.value = "Save Changes";
+    element.value = "Save Edit";
     element.class = "ui-btn ui-icon-refresh";
     element.addEventListener("click", function SaveChanges() {
         var currentlist = []; currentlist= JSON.parse(localStorage.getItem("PendingList"));
@@ -235,7 +234,6 @@ function AddSaveChangesButton(id) {
 
     }, false);
     
-    //   document.querySelector(element.value).addEventListener("click", AddComplete, false);
     var divid = "job" + id;
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
@@ -246,7 +244,7 @@ function AddDeleteJobButton(id)
     var element = document.createElement("input");
     element.type = "button";
     element.id = "DeleteJob" + id;
-    element.value = "Delete Job";
+    element.value = "Delete";
     element.class = "ui-btn ui-icon-delete";
     element.addEventListener("click", function DeleteJob() {
 
@@ -278,7 +276,7 @@ function LoadCompletedList(array) {
                 $("#CompletedJobList").append(
                "<div data-role=" + "collapsible" + " data-collapsed=" + "false" + ">" + "<h3>" + obj[l].title + "</h3>" +
                    "<p>" + obj[l].text + "</p> <br/>"+  "</div>");
-                     //         " <a data-role="+'button'+"  id=" + "btnDel" + " value=" + i + " data-icon=" + 'delete'  + "> Delete </a> " +
+                 
                 AddDeleteCompletedJobButton(l);
             }
             
@@ -289,7 +287,7 @@ function LoadCompletedList(array) {
     }
 }
 function AddDeleteCompletedJobButton(id)
-{
+{ 
     var element = document.createElement("input");
     element.type = "button";
     element.id = "DeleteCompleted" + id;
@@ -365,37 +363,18 @@ function AddDeleteCompletedJobButton(id)
     }
     function doEmail()
     {
-
-      var subject = "Pending Jobs";
-
-        var array = [];
-        array = JSON.parse(localStorage.getItem("PendingList"));
-        var messagebody="this email";
-        for (var i = 0 ; i < array.length; i++) {
-            messagebody = +
-            " <div>" +
-            "<h2>" + array[i].title + "</h2>" +
-                "<p> " + array[i].text + "</br>" +
-                            "</div> <br/>"
-        }
-
-     if (!window.plugin) {
-            //non-mobile - plugins are not present.
-            alert("Email plugin is not available");
-            
-            return;
-        }
-        if (!isAvailable) {
-            //mobile, but no email installed
-            alert("Email is not available")
-            return;
-        }
-        cordova.plugins.email.open({
-            to: [], cc: [], bcc: [], attachments: [],
-            subject: subject,
-            body: messagebody,
-            isHtml: true
-        });
+        // open default built email composer accout and add the pending job list in message body 
       
+      var array = [];
+        array = JSON.parse(localStorage.getItem("PendingList"));
+        var messagebody="Pending Job List";
+        for (var i = 0 ; i < array.length; i++) {
+            messagebody +="%0D%0A"+ "job:" + array[i].title +
+            "%0D%0A" + "Description:" + array[i].text + "%0D%0A" ;
+        }
+        var Toaddress = document.getElementById("txtEmail").value;
+        btnEmail.href="mailto:"+Toaddress+"?subject=Pending Job&body=";
+        btnEmail.href +=messagebody;
+       
     }
 

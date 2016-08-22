@@ -6,8 +6,6 @@
         For details, see http://go.microsoft.com/fwlink/?LinkID=617521
     -->
        
-
-
         <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
         
         <meta name="format-detection" content="telephone=no">
@@ -16,16 +14,6 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
         <title>To Do List</title>
-
-       
-   <!-- <script type="text/javascript">
-              app.initialize();
-
-                document.addEventListener("deviceready", onDeviceReady, false);
-             //   $(document).on("vclick", "btn_Add", AddEntry());
-                document.addEventListener("btn_Add", AddEntry, false);
-        </script>-->
-       
 
     </head>
     <body>
@@ -46,7 +34,7 @@
                 </div>
                 
                 <div class="ui-content">
-                    <h1> Add New Job</h1>
+                    <h2> Add New Job</h2>
                     <label for="text-3">Enter Job Title</label>
                     <input name="text-3"  id="JobTitle" Type="text" value="" data-clear-btn="true">
                     <label for="textarea-1">Enter Description</label>
@@ -58,7 +46,7 @@
                 </div>
             </div>
 
-            <div data-role="page" id="PendingPage">
+            <div data-role="page" class="ui-content" id="PendingPage">
 
 
      <div data-role="header" data-position="fixed" data-add-back-btn="true">
@@ -73,29 +61,30 @@
                     </div>
 
                 </div>
-                <div>
-                    <a id="btnSortUp"  data-role="button"  onclick="SortListUp();"  data-icon="arrow-u" data-iconpos="notext">date up</a> 
-                    <a id="btnSortDown" data-role="button" onclick="SortListDown();"  data-icon="arrow-d" data-iconpos="notext">date Down></a>
-                </div>
+           
+                    <a id="btnSortUp"  data-role="button"  onclick="SortListUp();"   data-icon="arrow-u" data-iconpos="notext"></a> 
+                    <a id="btnSortDown" data-role="button" onclick="SortListDown();"  data-icon="arrow-d" data-iconpos="notext"></a>
+                
                 <div  id="PendingJobList" class="ui-content"   >
-                    <h1>Pending Job</h1>
+                    <h2>Pending Job</h2>
                     <div id="PendingJobListCollasp" data-role="collapsible-set">
                         <div id="UiPendingList" data-role="collapsible" >
 
                         </div>
                     </div>
                 </div>
+                <p>Recipient Email:</p>
+                <input id="txtEmail" type="text" data-clear-btn="true" /> <br />
 
-                <input id="txtEmail" type="text" data-clear-btn="true" /> Recipient Email<br />
-
-                <button id="btnEmail" data-role="button"  class="ui-btn">Send email </button>
+                <a href="mailto:#" id="btnEmail" data-role="button"  class="ui-btn">Send email </a>
+           
 
             </div>
             
             <div class="ui-content" data-role="page" id="CompletedPage">
 
              <div data-role="header" data-position="fixed" data-add-back-btn="true">
-                    <h1> To Do List</h1>
+                    <h2> To Do List</h2>
                     <div data-role="navbar">
                         <ul>
                             <li> <a href="#AddNewJob" data-ng-href="AddNewJob" data-icon="plus">Add New Job</a></li>
@@ -106,9 +95,9 @@
 
                     </div>
                     </div>
-
+                <h2> Completed Job </h2>
                         <div id="CompletedJobList" data-role="collapsible-set">
-                            <h1> Completed Job </h1>
+                          
 
 
                         </div>
