@@ -54,7 +54,8 @@ var PendingList = [];
         if (existingEntries == null) existingEntries = [];
         var entryTitle = document.getElementById('JobTitle').value;
         var entryText = document.getElementById('Description').value;
-        var entryimg = document.getElementById('smallImage').src;
+        if (document.getElementById('smallImage').src.length != 0) { var ententryimg = document.getElementById('smallImage').src;}
+            
         var entry =
             {
                 "title": entryTitle,
@@ -72,7 +73,9 @@ var PendingList = [];
             localStorage.setItem("PendingList", JSON.stringify(existingEntries));
         }
         document.getElementById('JobTitle').value="";
-       document.getElementById('Description').value="";
+        document.getElementById('Description').value = "";
+        var display = document.getElementById('smallImage');
+        display.style = 'none';
      
     }
 
@@ -168,7 +171,8 @@ function AddDivJobText(id,text)
 }
 
 function AddImage(id, imgdata) {
-    var element = document.createElement("img");
+    if(imgdata)
+   { var element = document.createElement("img");
     element.id = "img" + id;
     element.src = imgdata;
     element.width= "80";
@@ -176,7 +180,7 @@ function AddImage(id, imgdata) {
     element.style.display = 'block';
     var DivParent = document.getElementById("UiPendingList");
     //Append the element in page (in span).  
-    DivParent.appendChild(element);
+    DivParent.appendChild(element);}
 }
 function AddCompleteButton(id)
 {
