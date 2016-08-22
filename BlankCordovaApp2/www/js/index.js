@@ -6,6 +6,7 @@
 
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value
+var JobImg;
 var CompletedList = [];
 var PendingList = [];
 (function () {
@@ -37,15 +38,8 @@ var PendingList = [];
         var receivedElement = parentElement.querySelector(".received");
            listeningElement.setAttribute('style', 'display:none;');
            receivedElement.setAttribute('style', 'display:block;');
-      //
-           if (window.plugin) {
-               window.plugin.email.isAvailable(
-                   function (isAvailable) {
-                       
-                   }
-               );
-           }
-        
+     
+                 
         };
     
     function AddEntry(e) {
@@ -54,17 +48,17 @@ var PendingList = [];
         if (existingEntries == null) existingEntries = [];
         var entryTitle = document.getElementById('JobTitle').value;
         var entryText = document.getElementById('Description').value;
-        var entryimg;
-        if (document.getElementById('smallImage').src=="")
+      //  var entryimg;
+        //if (document.getElementById('smallImage').src!="")
 
-        {  entryimg = document.getElementById('smallImage').src; };
+        //{  entryimg = document.getElementById('smallImage').src; };
             
         var entry =
             {
                 "title": entryTitle,
                 "text": entryText,
                 "date": Date.now(),
-                "Jobimage":entryimg,
+                "Jobimage":JobImg,
                 
             };
 
@@ -77,8 +71,8 @@ var PendingList = [];
         }
         document.getElementById('JobTitle').value="";
         document.getElementById('Description').value = "";
-        var display = document.getElementById('smallImage');
-        display.style = 'none';
+        var imgElement = document.getElementById('smallImage');
+        imgElement.style.display = "none";
      
     }
 
@@ -109,6 +103,7 @@ function onPhotoDataSuccess(imageData) {
     // The in-line CSS rules are used to resize the image
     //
     smallImage.src = "data:image/jpeg;base64," + imageData;
+    JobImg = "data:image/jpeg;base64," + imageData;
 }
 function onPhotoURISuccess(imageURI) {
     var largeImage = document.getElementById('largeImage');
