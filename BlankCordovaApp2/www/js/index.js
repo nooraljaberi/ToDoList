@@ -272,14 +272,14 @@ function LoadCompletedList(array) {
             var obj = array[i];
             for (var l in obj) {
                 $("#CompletedJobList").append(
-               "<div data-role=" + "collapsible" + " data-collapsed=" + "false" + ">" + "<h3>" + obj[l].title + "</h3>" +
-                   "<p>" + obj[l].text + "</p> <br/>"+  "</div>");
+               "<li data-role=" + "collapsible" + " data-collapsed=" + "false" + ">" + "<h3>" + obj[l].title + "</h3>" +
+                   "<p>" + obj[l].text + "</p> <br/>"+  "</li>");
                  
                 AddDeleteCompletedJobButton(l);
             }
             
         }
-        $("#ComletedJobList").collapsibleset().collapsibleset("refresh");
+        $(".ComletedJobList").listview("refresh");
       
      
     }
